@@ -250,15 +250,10 @@ http://localhost:5000
 
 ---
 
-## 👨‍💻 Developer 
+## Developer 
 
 Tarun C H
-
-### Project Title
-**CollabBoard – Digital Collaborative Whiteboard System**
-
-A professional real-time collaboration platform developed using Flask, Socket.IO, SQLite, HTML, CSS, and JavaScript to enable seamless teamwork, communication, and visual collaboration in a shared digital workspace.
-
+GitHub: @TarunCH-builds
 ---
 
 ## 📜 License
