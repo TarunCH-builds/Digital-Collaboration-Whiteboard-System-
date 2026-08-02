@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ board.board_name }} - CollabBoard Workspace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body style="overflow: hidden;">
+
+    <div class="workspace">
+        <header class="top-toolbar glass-panel">
+            <div class="toolbar-left">
+                <a href="{{ url_for('dashboard') }}" class="btn-action">← Return Home</a>
+                <h3>Workspace: <span style="color: var(--accent-color);">{{ board.board_name }}</span></h3>
+            </div>
+            <div class="toolbar-right">
+                <button class="btn-action" id="zoomOutBtn">Zoom -</button>
+                <span id="zoomDisplay">100%</span>
+                <button class="btn-action" id="zoomInBtn">Zoom +</button>
+                <button class="btn-action" id="undoBtn">Undo</button>
+                <button class="btn-action" id="redoBtn">Redo</button>
+                <button class="btn-action" id="clearBtn" style="border-color: var(--danger-color); color: var(--danger-color);">Clear</button>
+                <button class="btn-primary" id="exportPngBtn" style="width: auto; padding: 6px 12px;">PNG</button>
+                <button class="btn-primary" id="exportPdfBtn" style="width: auto; padding: 6px 12px; background: #10b981;">PDF</button>
+                <span id="saveStatus" style="font-size: 0.8rem; color: var(--text-muted);">Synced</span>
+            </div>
+        </header>
+
+        <div class="workspace-container">
+            
+            <div class="tools-palette glass-panel">
+                <button class="tool-btn active" id="tool-pencil" title="Pencil">✏️</button>
+                <button class="tool-btn" id="tool-brush" title="Brush">🖌️</button>
+                <button class="tool-btn" id="tool-eraser" title="Eraser">🧽</button>
+                <button class="tool-btn" id="tool-line" title="Line">📏</button>
+                <button class="tool-btn" id="tool-rect" title="Rectangle">⬜</button>
+                <button class="tool-btn" id="tool-circle" title="Circle">⭕</button>
+                <button class="tool-btn" id="tool-text" title="Text Input">🔤</button>
+                
+                <div class="tool-config">
+                    <input type="color" id="strokeColor" value="#000000" title="Color Picker">
+                </div>
+                <div class="tool-config">
+                    <select id="strokeSize" title="Stroke Size">
+                        <option value="2">2px</option>
+                        <option value="5" selected>5px</option>
+                        <option value="10">10px</option>
+                        <option value="20">20px</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="canvas-wrapper" id="canvasContainer">
+                <canvas id="whiteboard" width="1920" height="1080"></canvas>
+            </div>
+
+            <div id="cursor-layer" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden;"></div>
+
+            <div class="chat-panel glass-panel">
+                <div class="chat-header">Project Communications</div>
+                <div class="chat-messages" id="chatMessages">
+                    {% for msg in messages %}
+                        <div class="chat-bubble {% if msg.username == username %}me{% endif %}">
+                            <div class="chat-meta">
+                                <strong>{{ msg.username }}</strong>
+                                <span>{{ msg.timestamp }}</span>
+                            </div>
+                            <div class="chat-text">{{ msg.message }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" class="form-control" placeholder="Type a message..." autocomplete="off">
+                    <button id="chatSendBtn">➔</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const BOARD_ID = "{{ board.id }}";
+        const USERNAME = "{{ username }}";
+        // Base64 encoded payload of previous layout state injection matrix
+        const INITIAL_CANVAS_STATE = `{{ board.canvas_data | safe }}`;
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
