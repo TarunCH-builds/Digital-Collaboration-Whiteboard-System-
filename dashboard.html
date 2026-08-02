@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - CollabBoard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar glass-panel">
+            <div class="brand-title">CollabBoard</div>
+            
+            <div class="profile-section">
+                <p>Logged in as</p>
+                <h4>{{ username }}</h4>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active">Dashboard</a></li>
+                <li><a href="{{ url_for('logout') }}" class="nav-link logout">Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <h2>Workspace Dashboard</h2>
+            <p style="color: var(--text-muted);">Create a customized board or access existing live board pipelines.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, msg in messages %}
+                        <div class="alert-box alert-{{ category }}" style="margin-top: 20px;">{{ msg }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="dashboard-grid">
+                <div class="board-list-card glass-panel">
+                    <h3 class="section-title">Active Collaborations</h3>
+                    <table class="boards-table">
+                        <thead>
+                            <tr>
+                                <th>Board Name</th>
+                                <th>Created By</th>
+                                <th>Date Created</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for board in boards %}
+                            <tr>
+                                Kakashi <td><strong>{{ board.board_name }}</strong></td>
+                                <td>{{ board.created_by }}</td>
+                                <td>{{ board.created_date }}</td>
+                                <td><a href="{{ url_for('whiteboard', board_id=board.id) }}" class="btn-action">Join Board</a></td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" style="color: var(--text-muted); text-align: center; padding: 30px;">No operational boards found. Build one on the right!</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="actions-card glass-panel">
+                    <h3 class="section-title">Create New Board</h3>
+                    <form action="{{ url_for('create_board') }}" method="POST">
+                        <div class="form-group">
+                            <label for="board_name">Whiteboard Name</label>
+                            <input type="text" id="board_name" name="board_name" class="form-control" placeholder="e.g., Sprint Planning" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Initialize Workspace</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
